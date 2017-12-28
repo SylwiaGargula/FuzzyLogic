@@ -1,0 +1,76 @@
+FUNCTION_BLOCK hematolog
+
+VAR_INPUT
+	zelazo : REAL;
+	ferrytyna : REAL;
+END_VAR
+
+VAR_OUTPUT
+	dawka : REAL;
+END_VAR
+
+FUZZIFY zelazo
+	TERM bardzoSlabe:= trape 0 0 3 6;
+	TERM slabe:= trian 4 6 11;
+	TERM optymalne:= trape 8.8 10 17 22;
+	TERM duzo:=trian 20 22 25;
+	TERM bardzoDuzo:=trape 23 30 35 35; 
+END_FUZZIFY
+
+FUZZIFY ferrytyna
+	TERM bardzoSlabe:=trape 0 0 8 17;
+	TERM slabe:=trian 12 15 29;
+	TERM optymalne:=trape 19 27 80  100;
+	TERM duzo:=trian 90 110 120;
+	TERM bardzoDuzo:=trape 110 120 150 150;
+END_FUZZIFY
+
+DEFUZZIFY dawka
+	TERM nieUzupelniacDiety:= trian -25 0 25; 
+	TERM NormalnaDieta:=trian 10 20 46;
+	TERM CzesciowaSuplementacja:=trian 30 70 90;
+	TERM MaksymalnaSuplementacja:=trian 80 100 120;
+	METHOD : COG;
+	DEFAULT := 0;
+END_DEFUZZIFY
+
+RULEBLOCK No1
+	AND : MIN;
+	ACT : MIN;
+	ACCU : MAX;
+	
+	RULE 1 : IF zelazo IS bardzoSlabe AND ferrytyna IS bardzoSlabe THEN dawka IS MaksymalnaSuplementacja;
+	RULE 2 : IF zelazo IS slabe AND ferrytyna IS bardzoSlabe THEN dawka IS MaksymalnaSuplementacja;
+	RULE 3 : IF zelazo IS optymalne AND ferrytyna IS bardzoSlabe THEN dawka IS CzesciowaSuplementacja;
+	RULE 4 : IF zelazo IS duzo AND ferrytyna IS bardzoSlabe THEN dawka IS NormalnaDieta;
+	RULE 5 : IF zelazo IS bardzoDuzo AND ferrytyna IS bardzoSlabe THEN dawka IS NormalnaDieta;
+	
+	RULE 6 : IF zelazo IS bardzoSlabe AND ferrytyna IS slabe THEN dawka IS MaksymalnaSuplementacja;
+	RULE 7 : IF zelazo IS slabe AND ferrytyna IS slabe THEN dawka IS CzesciowaSuplementacja;
+	RULE 8 : IF zelazo IS optymalne AND ferrytyna IS slabe THEN dawka IS NormalnaDieta;
+	RULE 9 : IF zelazo IS duzo AND ferrytyna IS slabe THEN dawka IS NormalnaDieta;
+	RULE 10 : IF zelazo IS bardzoDuzo AND ferrytyna IS slabe THEN dawka IS NormalnaDieta;
+	
+	RULE 11 : IF zelazo IS bardzoSlabe AND ferrytyna IS optymalne THEN dawka IS CzesciowaSuplementacja;
+	RULE 12 : IF zelazo IS slabe AND ferrytyna IS optymalne THEN dawka IS NormalnaDieta;
+	RULE 13 : IF zelazo IS optymalne AND ferrytyna IS optymalne THEN dawka IS NormalnaDieta;
+	RULE 14 : IF zelazo IS duzo AND ferrytyna IS optymalne THEN dawka IS nieUzupelniacDiety;
+	RULE 15 : IF zelazo IS bardzoDuzo AND ferrytyna IS optymalne THEN dawka IS nieUzupelniacDiety;
+	
+	RULE 16 : IF zelazo IS bardzoSlabe AND ferrytyna IS duzo THEN dawka IS NormalnaDieta;
+	RULE 17 : IF zelazo IS slabe AND ferrytyna IS duzo THEN dawka IS NormalnaDieta;
+	RULE 18 : IF zelazo IS optymalne AND ferrytyna IS duzo THEN dawka IS nieUzupelniacDiety;
+	RULE 19 : IF zelazo IS duzo AND ferrytyna IS duzo THEN dawka IS nieUzupelniacDiety;
+	RULE 20 : IF zelazo IS bardzoDuzo AND ferrytyna IS duzo THEN dawka IS nieUzupelniacDiety;
+	
+	RULE 21 : IF zelazo IS bardzoSlabe AND ferrytyna IS bardzoDuzo THEN dawka IS NormalnaDieta;
+	RULE 22 : IF zelazo IS slabe AND ferrytyna IS bardzoDuzo THEN dawka IS NormalnaDieta;
+	RULE 23 : IF zelazo IS optymalne AND ferrytyna IS bardzoDuzo THEN dawka IS nieUzupelniacDiety;
+	RULE 24 : IF zelazo IS duzo AND ferrytyna IS bardzoDuzo THEN dawka IS nieUzupelniacDiety;
+	RULE 25 : IF zelazo IS bardzoDuzo AND ferrytyna IS bardzoDuzo THEN dawka IS nieUzupelniacDiety;
+END_RULEBLOCK
+
+END_FUNCTION_BLOCK
+	
+
+	
